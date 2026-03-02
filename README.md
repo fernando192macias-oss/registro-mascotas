@@ -1,60 +1,100 @@
-# Biblioteca en Solana
+🏋️🐶 PetChain — Gestión de Mascotas en Solana
 
-![banner](./images/banner-biblioteca.jpg)
+PetChain es un programa on-chain desarrollado en Rust con Anchor sobre la blockchain de Solana.
+Permite a dueños de mascotas (o clínicas veterinarias) gestionar mascotas y sus registros de forma descentralizada, transparente e inmutable.
 
-CRUD básico de un Solana Program desarrollado con Rust y Anchor desde el Solana Playground. 
+📌 ¿Qué hace el proyecto?
 
-Puedes comenzar dándole Fork a este repositorio (abajo te explicamos como 👇), **hemos preparado un entorno de codespaces listo para que no tengas que instalar nada**, solo déjate llevar por la fluidez de los ejercicios y temas desarrollados especialmente para ti. 
+PetChain implementa un sistema CRUD completo para administrar mascotas:
 
-Asegúrate de clonar este repositorio a tu cuenta usando el botón **`Fork`**.
+Crear un perfil de dueño vinculado a tu wallet (owner)
 
-![fork](./images/fork.png)
+Registrar mascotas con nombre, especie y edad
 
-## Importando el proyecto 
+Eliminar mascotas cerrando su cuenta en la blockchain
 
-Ya con el repositorio en tu cuenta lo siguiente que debes hacer copiar el `enlace de tu repositorio`, lo que se puede hacer directamente desdel navegador:
+Activar/desactivar estado (ej: mascota en tratamiento)
 
-![repo](./images/repo.png)
-Posteriormente, lo uniremos con el siguiente enlace en nuestro navegador de preferencia:
+Actualizar datos como edad o estado de salud
 
-```url
-https://beta.solpg.io/
-```
+Cada dueño y cada mascota son cuentas derivadas (PDA) únicas en Solana, garantizando:
 
-Lo que nos dará algo parecido a:
+No puede haber duplicados
 
-![url](./images/url.png)
+Solo el owner autorizado puede modificar su información
 
-Al pulsar enter seremos enviados al `Solana Playground` con nuestro proyecto abierto:
+🏗️ Arquitectura
+Owner (Wallet)
+    │
+    └── Dueño (PDA)
+            │
+            ├── Mascota A (PDA)
+            ├── Mascota B (PDA)
+            └── Mascota C (PDA)
+📦 Structs principales
+🧑 Dueño
+Campo	Tipo	Descripción
+owner	Pubkey	Wallet del dueño
+nombre	String	Nombre del dueño
+mascotas	Vec<Pubkey>	Lista de PDAs de mascotas
+🐾 Mascota
+Campo	Tipo	Descripción
+dueno	String	Nombre del dueño
+nombre	String	Nombre de la mascota
+especie	String	Perro, gato, ave, etc
+edad	u8	Edad en años
+activa	bool	Estado (activa / inactiva)
+⚙️ Instrucciones (Funciones del programa)
+Instrucción	Descripción
+crear_dueno(nombre)	Crea la cuenta del dueño vinculada al owner
+registrar_mascota(nombre, especie, edad)	Registra una nueva mascota
+eliminar_mascota(nombre)	Elimina la mascota y cierra su cuenta
+alternar_estado(nombre)	Activa o desactiva la mascota
+actualizar_edad(nombre, edad)	Actualiza la edad de la mascota
+🔐 PDAs (Program Derived Addresses)
 
-![pg](./images/pg.png)
+Las cuentas se derivan con los siguientes seeds:
 
-Para guardarlo solo damos clic en el boton `import` y asignamos un nombre:
+Dueño:
+["dueno", nombre_dueno, owner_pubkey]
 
-![import](./images/import.png)
+Mascota:
+["mascota", nombre_mascota, owner_pubkey]
 
-## Preparacion del entorno
+Esto garantiza que:
 
-Primero conectaremos el entorno con la devnet, lo que tambien procederá a la creación de una wallet. Para eso daremos clic en donde dice **Not Conected**:
+Cada wallet puede tener su propio perfil único
 
-![playground1](./images/playground1.png)
+No pueden existir dos mascotas con el mismo nombre bajo el mismo dueño
 
-Saldrá la siguiente ventana donde daremos en el botón **Continue**:
+Solo el owner puede modificar sus mascotas
 
-![wallet](./images/wallet.png)
+🚀 Cómo usar el proyecto (Solana Playground)
 
-Como resultado se mostrará la siguiente información:
+Abre Solana Playground
 
-![status](./images/status.png)
+Haz fork del repositorio o pega el contenido en src/lib.rs
 
-* En verde: el estado de la conexión y el entorno al que se encuentra conectado
+Conecta tu wallet (devnet)
 
-* En amarillo: la la dirección de la wallet conectada
+Haz clic en Build y luego Deploy
 
-* En azul: la cantidad de tokens en la wallet
+Usa el panel de Test para interactuar con el programa
 
-> ℹ️ ¿Quieres ver el ejemplo de un "Hola Mundo" en Solana?. Da clic aquí: 👉 [Ver Ejemplo](https://github.com/WayLearnLatam/Solana-starter-kit/tree/1fc6349ba63375a3fe223d8d56911bc64765459b/build-deploy)
+📌 Ejemplo de flujo:
+1. crear_dueno("Fernando")
+2. registrar_mascota("Firulais", "Perro", 3)
+3. alternar_estado("Firulais")    → cambia estado
+4. actualizar_edad("Firulais", 4) → cumple años
+5. eliminar_mascota("Firulais")   → elimina registro
+🛠️ Tecnologías
 
-> ℹ️ ¿Cuentas con una Wallet de [Phantom](https://phantom.com/) que deseas importar?, Da clic aquí para ver como hacerlo: 
+Solana — Blockchain de alta velocidad
 
-👉 [Como Importar una Wallet](https://github.com/WayLearnLatam/Solana-starter-kit/tree/1fc6349ba63375a3fe223d8d56911bc64765459b/import-key-a-playground)
+Anchor Framework — Framework para programas Solana en Rust
+
+Rust — Lenguaje del programa
+
+👤 Autor
+
+Proyecto desarrollado como parte de la certificación de Solana, adaptado al modelo de gestión de mascotas.
